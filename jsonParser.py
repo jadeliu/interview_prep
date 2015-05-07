@@ -2,74 +2,72 @@ __author__ = 'weide'
 
 
 class JSONParser:
-    def __init__(self):
-        self.stack = []
+
 
     def parse(self, s):
         if s:
-            res, _ = self.parse_help(s, 0)
+
+            res, _ = self.parser_help(s, 0)
             return res
-    '''
-    def parse_help(self, s, start):
-        # return a dict and index of end pointer
-        dict = {}
-        idx = start
+
+
+
+    # idx is the position of first parenthesis
+    # return the position of the second parenthesis
+    def parser_help(self, s, idx):
         key = ''
         value = None
-        while idx<len(s):
-            idx = self.skip_ws(s, idx)
-            if s[idx] == '{': # when meet '{', next token should be the next string with space stripped
-                self.stack.push('{')
-                idx += 1
-                idx = self.skip_ws(s, idx)
-                temp = idx
-                key, idx = self.get_string(s, idx)
-                idx = self.skip_ws(s, idx)
-                if s[idx]==':':
-                    # meets ':', mark start of value
-                    idx += 1
-                    idx = self.skip_ws(s, idx)
-                    if s[idx] == '{':
-                        value, idx = self.parse_help(s, idx)
-                    else:
-                        value, idx = self.get_string(s, idx)
-            elif s[idx] == ',':
-                dict[key]=value
+        dict = {}
+        in_value = False
+        i = idx
+        while i < len(s):
+            i = self.skip_ws(s, i)
+            if s[i] == '{':
+                if in_value == True:
+                    value, i = self.parser_help(s, i)
+                else:
+                    key, i = self.get_string(s, i + 1)
+                i += 1
+            elif s[i] == ',':
+                dict[key] = value
                 key = ''
                 value = None
-            elif s[idx] == '}':
-                if self.stack.pop()=='{':
-                    return (dict, idx)
-                else:
-                    return None
-        return (dict, idx)
-    '''
+                i = self.skip_ws(s, i + 1)
+            elif s[i] == ':':
+                in_value = True
+                i += 1
+            elif s[i] == '"':  # value is string
+                value, i = self.get_string(s, i)
+                i += 1
+            elif s[i] == '}':
+                dict[key] = value
+                i += 1
 
-    def parser_help(self, s, idx):
-        in_paren = False
-        in_
+        return (dict, i)
+
 
     def skip_ws(self, s, idx):
         temp = idx
-        while temp<len(s):
-            if s[temp]==' ':
+        while temp < len(s):
+            if s[temp] == ' ':
                 temp += 1
         return temp
 
     def get_string(self, s, idx):
-        temp = idx
-        if s[temp]=='"':
-            self.stack.push('"')
+        temp = self.skip_ws(s, idx)
+        if s[temp] == '"':
+            left_cit = True
             temp += 1
-            while temp!='"':
+            while temp != '"':
                 temp += 1
-            if self.stack.pop()=='"':
-                key = s[idx, temp+1]
-                temp+=1
+            if left_cit:
+                key = s[idx, temp + 1]
+                temp += 1
             return (s[idx, temp], temp)
-        return None
+        return (None, None)
 
-s = "{\"here\":\"one\"}"
+
+s = "{"here":"one"}"
 
 parser = JSONParser()
 print parser.parse(s)

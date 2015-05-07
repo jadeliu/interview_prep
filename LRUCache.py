@@ -68,7 +68,6 @@ class LRUCache:
         self.size = 0
         self.list = DoubleLinkedList()
 
-
     # @param key, an integer
     # @param value, an integer
     # @return nothing
