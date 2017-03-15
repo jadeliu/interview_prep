@@ -13,6 +13,12 @@ public class heap {
             return b-a;
         }
     }
+    
+    static void printAllElementsInOrder(PriorityQueue<Integer> pq){
+        while(!pq.isEmpty()){
+            System.out.print(pq.poll()+" ");
+        }
+    }
 
     public static void main(String[] argv){
         PriorityQueue<Integer> minHeap=new PriorityQueue<Integer>();
@@ -25,6 +31,8 @@ public class heap {
             System.out.println("max heap peek value = "+maxHeap.peek());
 
         }
-
+        printAllElementsInOrder(minHeap);
+        System.out.println();
+        printAllElementsInOrder(maxHeap);
     }
 }
